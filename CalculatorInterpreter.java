@@ -31,7 +31,7 @@ public class CalculatorInterpreter {
     }   
   }
 
-  public void parse() throws IOException, ParseError {
+  public int parse() throws IOException, ParseError {
     // Our starting rule is expr().
     expr();
   }
@@ -39,7 +39,7 @@ public class CalculatorInterpreter {
   // Used to skip whitespace from input stream in order to allow
   // more flexible input expressions.
   private void cleanWhitespace() throws IOException {
-    while (lookahead == ' ') {
+    while (lookahead == ' ' || lookahead == '\t') {
       lookahead = inputStream.read();
     }
   }
@@ -56,7 +56,7 @@ public class CalculatorInterpreter {
 
   // expr -> term expr2
   //       |  empty
-  private void expr() throws ParseError, IOException {
+  private int expr() throws ParseError, IOException {
     // Parse error
     if (lookahead == '^'
      || lookahead == -1
@@ -71,7 +71,7 @@ public class CalculatorInterpreter {
 
   // expr2 -> ^ term expr2
   //       |  empty
-  private void expr2() throws ParseError, IOException {
+  private int expr2() throws ParseError, IOException {
     // empty
     if (lookahead == -1
      || lookahead == '\n'
@@ -89,7 +89,7 @@ public class CalculatorInterpreter {
   }
 
   // term -> factor term2
-  private void term() throws ParseError, IOException {
+  private int term() throws ParseError, IOException {
     // factor term2
     if ((lookahead >= '0' && lookahead <= '9')
      || lookahead == '(') {
@@ -102,7 +102,7 @@ public class CalculatorInterpreter {
 
   // term2 -> & factor term2
   //        | empty
-  private void term2() throws ParseError, IOException {
+  private int term2() throws ParseError, IOException {
     if (lookahead == '&') {
       consume('&');
       factor();
@@ -113,33 +113,35 @@ public class CalculatorInterpreter {
      || lookahead == -1
      || lookahead == '\n'
      || lookahead == ')') {
-      return;
+      return 0;
     }
     throw new ParseError("term2() got " + lookahead);
   }
 
   // factor -> num
   //         | ( expr )
-  private void factor() throws ParseError, IOException {
+  private int factor() throws ParseError, IOException {
     // ( expr )
     if (lookahead == '(' ) {
       consume('(');
-      expr();
+      int value = expr();
       consume(')');
-      return;
+      return value;
     }
     // num
     if (lookahead >= '0' && lookahead <= '9') {
-      num();
-      return;
+      int value = num();
+      return value;
     }
     throw new ParseError("factor() got " + lookahead);
   }
 
   // num -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-  private void num() throws ParseError, IOException {
+  private int num() throws ParseError, IOException {
     if (lookahead >= '0' && lookahead <= '9') {
+      int value = lookahead - '0';
       consume(lookahead);
+      return value;
     } else {
       throw new ParseError("num() got " + lookahead);
     }
