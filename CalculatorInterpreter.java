@@ -42,7 +42,7 @@ public class CalculatorInterpreter {
   // Used to skip whitespace from input stream in order to allow
   // more flexible input expressions.
   private void cleanWhitespace() throws IOException {
-    while (lookahead == ' ') {
+    while (lookahead == ' ' || lookahead == '\t') {
       lookahead = inputStream.read();
     }
   }
@@ -115,7 +115,7 @@ public class CalculatorInterpreter {
      || lookahead == -1
      || lookahead == '\n'
      || lookahead == ')') {
-      return;
+      return 0;
     }
     throw new ParseError("term2() got " + lookahead);
   }
@@ -126,14 +126,14 @@ public class CalculatorInterpreter {
     // ( expr )
     if (lookahead == '(' ) {
       consume('(');
-      expr();
+      int value = expr();
       consume(')');
-      return;
+      return ;
     }
     // num
     if (lookahead >= '0' && lookahead <= '9') {
-      num();
-      return;
+      int value = num();
+      return ;
     }
     throw new ParseError("factor() got " + lookahead);
   }
@@ -141,7 +141,9 @@ public class CalculatorInterpreter {
   // num -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
   private void num() throws ParseError, IOException {
     if (lookahead >= '0' && lookahead <= '9') {
+      int value = lookahead - '0';
       consume(lookahead);
+      return ;
     } else {
       throw new ParseError("num() got " + lookahead);
     }
