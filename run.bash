@@ -1,52 +1,25 @@
 #!/bin/bash
-
 echo "Compiling..."
-
 javac ./CalculatorInterpreter.java ./ParseError.java
-
-echo "Running success examples..."
-
-echo "****************************"
-echo "Running expression:"
-cat ./examples/easy_success
-echo ""
-echo "----------------------------"
-java CalculatorInterpreter < ./examples/easy_success
-
-echo "****************************"
-echo "Running expression:"
-cat ./examples/normal_success
-echo ""
-echo "----------------------------"
-java CalculatorInterpreter < ./examples/normal_success
-
-echo "****************************"
-echo "Running expression:"
-cat ./examples/hard_success
-echo ""
-echo "----------------------------"
-java CalculatorInterpreter < ./examples/hard_success
-
-echo "****************************"
-echo "Running expression:"
-cat ./examples/extreme_success
-echo ""
-echo "----------------------------"
-java CalculatorInterpreter < ./examples/extreme_success
-
-
-echo "Running fail examples..."
-
-echo "****************************"
-echo "Running expression:"
-cat ./examples/easy_fail
-echo ""
-echo "----------------------------"
-java CalculatorInterpreter < ./examples/easy_fail
-
-echo "****************************"
-echo "Running expression:"
-cat ./examples/hard_fail
-echo ""
-echo "----------------------------"
-java CalculatorInterpreter < ./examples/hard_fail
+FILES="./examples/easy_fail
+./examples/easy_success
+./examples/extreme_fail
+./examples/extreme_fail2
+./examples/extreme_success
+./examples/extreme_success2
+./examples/hard_fail
+./examples/hard_fail2
+./examples/hard_success
+./examples/hard_success2
+./examples/hard_success3
+./examples/normal_success"
+for input in $FILES
+do
+    echo ""
+    echo "============================"
+    cat $input
+    echo ""
+    echo "----------------------------"
+    java CalculatorInterpreter < $input
+    echo "============================"
+done
