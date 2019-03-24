@@ -34,6 +34,9 @@ public class CalculatorInterpreter {
   public void parse() throws IOException, ParseError {
     // Our starting rule is expr().
     expr();
+    if ( lookahead != -1 && lookahead != '\n' ) {
+      throw new ParseError("Expected newline or EOF");
+    }
   }
 
   // Used to skip whitespace from input stream in order to allow
@@ -55,7 +58,6 @@ public class CalculatorInterpreter {
   }
 
   // expr -> term expr2
-  //       |  empty
   private void expr() throws ParseError, IOException {
     // Parse error
     if (lookahead == '^'
